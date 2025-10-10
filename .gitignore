@@ -1,0 +1,144 @@
+# ======================
+# GENERAL SYSTEM FILES
+# ======================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# ======================
+# PYTHON / DJANGO
+# ======================
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django
+db.sqlite3
+media/
+staticfiles/
+*.pot
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+*.mo
+
+# Virtual environment
+venv/
+ENV/
+env/
+.venv/
+
+# Django secrets and local settings
+/local_settings.py
+/config/settings/local.py
+
+# ======================
+# NODE / REACT + VITE
+# ======================
+node_modules/
+dist/
+build/
+.cache/
+.vscode/
+.idea/
+*.tsbuildinfo
+
+# Vite / React
+*.local
+vite.config.ts.timestamp-*
+vite.config.js.timestamp-*
+vite.config.mjs.timestamp-*
+
+# npm / Yarn / pnpm lockfiles (keep only one depending on your setup)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# ======================
+# DATABASE / MONGODB
+# ======================
+# Local MongoDB data directories (never commit)
+data/
+dump/
+*.bson
+*.json
+
+# ======================
+# AUTH0 / SECRETS
+# ======================
+# Any credentials or private keys
+auth0_config.json
+auth0_secrets.json
+secrets.json
+
+# ======================
+# EDITOR / OS FILES
+# ======================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.bak
+*.tmp
+*.temp
+
+# ======================
+# TESTS & COVERAGE
+# ======================
+htmlcov/
+.tox/
+.nox/
+.coverage
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+junit.xml
+
+# ======================
+# MISC
+# ======================
+# Local build/test data
+tmp/
+temp/
+*.pid
+*.seed
+*.out
+*.log
+
+# Backup files
+*.orig
+*.rej
+
+# ======================
+# DOCKER / CONTAINERS (if used)
+# ======================
+docker-compose.override.yml
+*.pid
+*.tar
+*.img
