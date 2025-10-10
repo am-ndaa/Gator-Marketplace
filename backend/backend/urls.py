@@ -15,10 +15,16 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.http import JsonResponse
 from django.urls import path
 from api.views import test_view
+
+
+def root(request):
+    return JsonResponse({"message": "Gator Marketplace API is running :)"})
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/test/', test_view),
+    path('', root),
 ]
