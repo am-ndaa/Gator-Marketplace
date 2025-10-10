@@ -85,6 +85,7 @@ data/
 dump/
 *.bson
 *.json
+!frontend/package.json
 
 # ======================
 # AUTH0 / SECRETS
