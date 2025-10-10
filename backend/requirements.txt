@@ -1,0 +1,23 @@
+# Django backend
+Django==4.2.25
+
+# MongoDB driver
+pymongo==4.9.1
+dnspython==2.7.0
+
+# Environment variables
+python-dotenv==1.0.1
+
+# REST API support
+djangorestframework==3.15.2
+
+# CORS handling for React frontend
+django-cors-headers==4.4.0
+
+# Auth0 / JWT support (optional, for authentication)
+python-jose==3.3.0
+requests==2.32.3
+
+# Utility packages
+gunicorn==23.0.0        # for deployment (safe to keep)
+whitenoise==6.7.0       # serve static files if deployed
