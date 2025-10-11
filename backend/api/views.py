@@ -5,7 +5,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
-from backend.db.client import get_db, get_collection
+from db.client import get_db, get_collection
 from .serializers import ListingSerializer, UserSerializer
 
 def now(): return datetime.utcnow()
