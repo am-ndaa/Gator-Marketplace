@@ -20,7 +20,7 @@ def get_db():
     if _db:
         return _db
     mongo_uri = os.getenv("MONGO_URI")
-    db_name = os.environ.get("MONGO_DB", "gator_marketplace")
+    db_name = os.getenv("MONGO_DB", "gator_marketplace")
     _client = MongoClient(mongo_uri)
     _db = _client[db_name]
     return _db
