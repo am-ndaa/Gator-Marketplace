@@ -1,5 +1,5 @@
 from dotenv import load_dotenv, find_dotenv
-from backend.db.client import get_db
+from client import get_db
 
 from uuid import uuid4
 
