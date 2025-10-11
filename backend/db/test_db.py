@@ -1,5 +1,3 @@
-import os
-import sys
 import uuid
 from dotenv import load_dotenv, find_dotenv
 from backend.db.client import get_db
