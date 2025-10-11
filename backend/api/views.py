@@ -57,8 +57,9 @@ def listing(request):
             if not me:
                 # logged our Or user not found -> return empty list
                 return Response({"items":[], "next_cursor": None})
-        # logged in -> show everything except my listings
-        query["seller_id"] = {"$ne": me["_id"]}
+            # logged in -> show everything except my listings
+
+            query["seller_id"] = {"$ne": me["_id"]}
 
         docs = list(listings.find(query).sort("created_at", -1))
         
@@ -98,7 +99,7 @@ def listing(request):
         created["seller_id"] = to_str(created["seller_id"])
 
         return Response(created, status=201)
-
+'''
 # @api_view(["POST"])
 # #@permission_classes([IsAuthenticated])  # require login here FIXME
 # def create_listing(request):
@@ -129,3 +130,4 @@ def listing(request):
 #     created["seller_id"] = to_str(created["seller_id"])
 
 #     return Response(created, status=201)
+'''
