@@ -4,11 +4,14 @@ This file contains the database client setup and connection logic. (Manages and 
 '''
 
 import os
+from dotenv import load_dotenv, find_dotenv
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 
 _client = None
 _db = None
+
+load_dotenv(find_dotenv())  # read .env file, if it exists, LOAD THEN FIND
 
 def get_db():
     global _client, _db

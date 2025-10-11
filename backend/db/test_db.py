@@ -1,8 +1,10 @@
 import os
 import sys
 import uuid
+from dotenv import load_dotenv, find_dotenv
 from backend.db.client import get_db
 
+load_dotenv(find_dotenv())  # read .env file, if it exists, LOAD THEN FIND
 
 def main():
     # Helpful debug info for users
