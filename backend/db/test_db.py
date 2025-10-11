@@ -4,46 +4,44 @@ import uuid
 from dotenv import load_dotenv, find_dotenv
 from backend.db.client import get_db
 
+from uuid import uuid4
+
 load_dotenv(find_dotenv())  # read .env file, if it exists, LOAD THEN FIND
 
 def main():
-    # Helpful debug info for users
-    mongo_uri = os.getenv('MONGO_URI')
-    db_name = os.getenv('MONGO_DB', 'gator_marketplace')
-    print(f"Using MONGO_URI={'(not set)' if not mongo_uri else mongo_uri}")
-    print(f"Using MONGO_DB={db_name}")
+    db = get_db()
 
+    # 1. Ping the server
     try:
-        db = get_db()
+        db.command("ping")
+        print("✅ Ping successful — connected to MongoDB!")
     except Exception as e:
-        print("Failed to connect to MongoDB:", e)
-        sys.exit(2)
+        print("❌ Ping failed:", e)
+        return
 
-    try:
-        # list collections (safe op)
-        cols = list(db.list_collection_names())
-        print("Collections in DB:", cols)
+    # 2. Insert a test document into a temp collection
+    test_coll = db["test_collection"]
+    marker_id = str(uuid4())
+    test_doc = {"_test_id": marker_id, "hello": "world"}
+    result = test_coll.insert_one(test_doc)
+    print(f"✅ Inserted test document with _id: {result.inserted_id}")
 
-        # round-trip insert/read to a test collection
-        test_coll = db.get_collection('test_connection')
-        test_id = str(uuid.uuid4())
-        doc = {"_id": test_id, "status": "ok"}
-        test_coll.insert_one(doc)
-        found = test_coll.find_one({"_id": test_id})
-        if not found:
-            print("Inserted document not found — something is wrong")
-            sys.exit(3)
-        print("Round-trip insert/read succeeded:", found)
+    # 3. Read the document back
+    found = test_coll.find_one({"_test_id": marker_id})
+    if found:
+        print("✅ Found test document:", found)
+    else:
+        print("❌ Failed to find inserted document.")
+        return
 
-        # cleanup
-        test_coll.delete_one({"_id": test_id})
+    # 4. Delete the test document
+    delete_result = test_coll.delete_one({"_test_id": marker_id})
+    if delete_result.deleted_count == 1:
+        print("✅ Successfully deleted test document.")
+    else:
+        print("❌ Failed to delete test document.")
 
-    except Exception as e:
-        print("Error during DB operations:", e)
-        sys.exit(4)
+    print("🎉 All MongoDB tests passed!")
 
-    print("MongoDB connection test passed")
-
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
