@@ -51,7 +51,7 @@ class ListingsIntegrationTests(TestCase):
 		self.user_id = res.inserted_id
 
 	def tearDown(self):
-		# Clean up listings and user docs we created (matching the unique marker)
+		# Clean up listings and user docs we created (matching the unique marker) 
 		self.listings.delete_many(self.test_marker)
 		self.users.delete_many(self.test_marker)
 
@@ -99,7 +99,6 @@ class ListingsIntegrationTests(TestCase):
 			"seller_id": self.user_id,
 			"status": "active",
 			"created_at": datetime.utcnow(),
-			"updated_at": datetime.utcnow(),
 		}
 		doc2 = {
 			**self.test_marker,
@@ -111,7 +110,6 @@ class ListingsIntegrationTests(TestCase):
 			"seller_id": self.user_id,
 			"status": "active",
 			"created_at": datetime.utcnow(),
-			"updated_at": datetime.utcnow(),
 		}
 		self.listings.insert_one(doc1)
 		self.listings.insert_one(doc2)
@@ -160,3 +158,9 @@ class ListingsIntegrationTests(TestCase):
 		self.assertIn("seller_id", created)
 		self.assertEqual(created["seller_id"], str(self.user_id))
 
+
+'''
+WIL Fail unless you get rid of self filtering in views.py
+
+
+'''
