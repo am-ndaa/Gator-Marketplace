@@ -1,4 +1,3 @@
-# ...existing code...
 from unittest import TestCase
 from unittest.mock import patch, MagicMock
 from rest_framework.test import APIClient
@@ -18,13 +17,33 @@ class ListingsUnitTests(TestCase):
         ]
         fake_cursor = MagicMock()
         fake_cursor.sort.return_value = fake_docs
+
+        # mock get_collection().find() to return our fake cursor
         mock_get_collection.return_value.find.return_value = fake_cursor
 
+        # --- mock get_db so users.find_one returns the authenticated user ---
+        fake_db = MagicMock()
+        fake_users_coll = MagicMock()
+        fake_users_coll.find_one.return_value = {"_id": "buyer123", "email": "buyer@example.com"}
+        def db_getitem(key):
+            if key == "users":
+                return fake_users_coll
+            return MagicMock()
+        fake_db.__getitem__.side_effect = db_getitem
+        mock_get_db.return_value = fake_db
+
+        # authenticate the test client (we're not testing auth itself)
+        self.client.force_authenticate(user=SimpleNamespace(email="buyer@example.com"))
+
+        # exercise: GET with a query parameter
         resp = self.client.get('/api/listings/', {'q': 'Red'})
-        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.status_code, 200, resp.content)
         body = resp.json()
         items = body.get('items', [])
+        # should contain the "Red Bike" and exclude none of the two since seller_id != me
         self.assertTrue(any('Red' in (it.get('title') or '') for it in items))
+        # ensure _id was transformed to id
+        self.assertIn('id', items[0])
 
     @patch('api.views.get_collection')
     @patch('api.views.get_db')
@@ -38,7 +57,7 @@ class ListingsUnitTests(TestCase):
             "image_url": "http://example.com/lamp.png"
         }
 
-        # fake DB users collection: find_one returns the authenticated user
+        # --- mock DB so users.find_one returns the authenticated user ---
         fake_db = MagicMock()
         fake_users_coll = MagicMock()
         fake_users_coll.find_one.return_value = {"_id": "seller123", "email": "test@example.com"}
@@ -49,22 +68,25 @@ class ListingsUnitTests(TestCase):
         fake_db.__getitem__.side_effect = db_getitem
         mock_get_db.return_value = fake_db
 
-        # fake listings collection: insert_one and find_one
+        # --- fake listings collection: insert_one and find_one ---
         fake_listings = MagicMock()
         fake_insert_result = MagicMock()
         fake_insert_result.inserted_id = "newid"
         fake_listings.insert_one.return_value = fake_insert_result
-        # the view will call find_one({"_id": res.inserted_id})
+
         created_doc = {"_id": "newid", **payload, "seller_id": "seller123", "created_at": "ts"}
         fake_listings.find_one.return_value = created_doc
+
         mock_get_collection.return_value = fake_listings
 
-        # authenticate the test client with a simple user that has an email
+        # authenticate the test client (we're not testing auth)
         self.client.force_authenticate(user=SimpleNamespace(email="test@example.com"))
 
+        # exercise: POST create
         resp = self.client.post('/api/listings/', payload, format='json')
-        self.assertEqual(resp.status_code, 201)
+        self.assertEqual(resp.status_code, 201, resp.content)
         body = resp.json()
-        # view sets 'id' from _id and stringifies seller_id
         self.assertEqual(body.get('id'), 'newid')
         self.assertEqual(body.get('seller_id'), 'seller123')
+        # ensure server-added fields present
+        self.assertIn('created_at', body)

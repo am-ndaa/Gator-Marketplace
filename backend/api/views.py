@@ -38,10 +38,10 @@ def listing(request):
         q = request.query_params.get("q")
         filter_param = request.query_params.get("filter")
 
-        query: Dict[str, Any] = {}
+        query: Dict[str, Any] = {} #Building the query/filter that will be sent to MongoDB, filtering is not being done locally
 
         if q:
-            # case-insensitive contains on title (no text index needed)
+            # case-insensitive contains on title (no text index needed), this is building a regex mongo db filter
             query["title"] = {"$regex": q, "$options": "i"}
 
         if filter_param:
@@ -49,17 +49,17 @@ def listing(request):
             query["category"] = filter_param
         
         # dashboard behavior: if NO q and NO filter -> show only all but my listings
-        if not q and not filter_param:
-            # if authenticated, request.user will be set by auth class
-            email  = getattr(request.user, "email", None) if getattr(request, "user", None) else None
-            me = get_user_by_email(email) if email else None
+       
+        # if authenticated, request.user will be set by auth class
+        email  = getattr(request.user, "email", None) if getattr(request, "user", None) else None
+        me = get_user_by_email(email) if email else None
 
-            if not me:
-                # logged our Or user not found -> return empty list
-                return Response({"items":[], "next_cursor": None})
-            # logged in -> show everything except my listings
+        if not me:
+            # logged our Or user not found -> return empty list
+            return Response({"items":[], "next_cursor": None})
+        # logged in -> show everything except my listings
 
-            query["seller_id"] = {"$ne": me["_id"]}
+        query["seller_id"] = {"$ne": me["_id"]}
 
         docs = list(listings.find(query).sort("created_at", -1))
         
