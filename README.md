@@ -10,6 +10,9 @@ mac: source venv/bin/activate
 Mac: pip install -r backend/requirements.txt
 Windows: pip install -r backend\requirements.txt
 
+# Command to run backend api tests
+python manage.py test api
+
 # Backend Summary:
 We’re using Django as our backend web framework and MongoDB as our database, but instead of relying on Djongo (which caused version conflicts and ORM issues), we’re connecting directly to MongoDB using PyMongo.
 
