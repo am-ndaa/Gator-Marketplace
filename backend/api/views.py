@@ -54,12 +54,12 @@ def listing(request):
         email  = getattr(request.user, "email", None) if getattr(request, "user", None) else None
         me = get_user_by_email(email) if email else None
 
-        if not me:
+        if not me and True == False:
             # logged our Or user not found -> return empty list
             return Response({"items":[], "next_cursor": None})
         # logged in -> show everything except my listings
 
-        query["seller_id"] = {"$ne": me["_id"]}
+            query["seller_id"] = {"$ne": me["_id"]}
 
         docs = list(listings.find(query).sort("created_at", -1))
         
@@ -69,6 +69,7 @@ def listing(request):
             d["seller_id"] = to_str(d.get("seller_id"))
             items.append(d)
 
+        print("LISTINGS RESPONSE:", items)
         return Response({"items": items, "next_cursor": None})
     
     elif request.method == "POST":
