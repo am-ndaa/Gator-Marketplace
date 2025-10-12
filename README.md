@@ -1,10 +1,10 @@
 # Gator Marketplace
 
 ## To install everything, run 
-python3 -m venv venv
+python3 -m venv venv || python -m venv venv
 
 # Activate the venv using
-windows: venv\Scripts\acivate
+windows: venv\Scripts\activate
 mac: source venv/bin/activate
 # To install backend requirements
 Mac: pip install -r backend/requirements.txt
@@ -26,8 +26,8 @@ DRF gives us serializers, request handling, and response formatting — just lik
 # Frontend setup
 
 ## To Install Dependencies
-cd frontend/
-npm install
+cd frontend/  
+npm install  
 npm run dev #This should work now that you installed the dependencies
 
 Make sure you have prereqs installed: node -v, npm -v
