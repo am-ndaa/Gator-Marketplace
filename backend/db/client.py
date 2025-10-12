@@ -17,7 +17,7 @@ load_dotenv(find_dotenv())  # read .env file, if it exists, LOAD THEN FIND
 def get_db():
     # Returns reference to the database, initializing connection if needed.
     global _client, _db
-    if _db:
+    if _db is not None:
         return _db
     mongo_uri = os.getenv("MONGO_URI")
     db_name = os.getenv("MONGO_DB", "gator_marketplace")
