@@ -5,7 +5,7 @@ import json
 from django.test import TestCase
 from rest_framework.test import APIClient
 
-from backend.db.client import get_db, get_collection
+from db.client import get_db, get_collection
 
 
 class ListingsIntegrationTests(TestCase):
@@ -117,7 +117,7 @@ class ListingsIntegrationTests(TestCase):
 		self.listings.insert_one(doc2)
 
 		# 1) Search by q (title contains "Red")
-		resp = self.client.get("/api/listings", {"q": "Red"})
+		resp = self.client.get("/api/listings/", {"q": "Red"})
 		self.assertEqual(resp.status_code, 200)
 		body = resp.json()
 		items = body.get("items", [])
@@ -126,7 +126,7 @@ class ListingsIntegrationTests(TestCase):
 		self.assertTrue(any("Red" in (t or "") for t in titles))
 
 		# 2) Filter by category "clothing"
-		resp2 = self.client.get("/api/listings", {"filter": "clothing"})
+		resp2 = self.client.get("/api/listings/", {"filter": "clothing"})
 		self.assertEqual(resp2.status_code, 200)
 		items2 = resp2.json().get("items", [])
 		categories = [it.get("category") for it in items2]
@@ -152,7 +152,7 @@ class ListingsIntegrationTests(TestCase):
 			"image_url": "http://example.com/lamp.png",
 		}
 
-		resp = self.client.post("/api/listings", data=json.dumps(payload), content_type="application/json")
+		resp = self.client.post("/api/listings/", data=json.dumps(payload), content_type="application/json")
 		# Expect created
 		self.assertEqual(resp.status_code, 201)
 		created = resp.json()
