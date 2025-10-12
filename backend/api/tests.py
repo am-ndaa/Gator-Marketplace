@@ -162,5 +162,4 @@ class ListingsIntegrationTests(TestCase):
 '''
 WIL Fail unless you get rid of self filtering in views.py
 
-
 '''
