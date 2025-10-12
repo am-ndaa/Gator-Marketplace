@@ -26,8 +26,8 @@ DRF gives us serializers, request handling, and response formatting — just lik
 # Frontend setup
 
 ## To Install Dependencies
-cd frontend/
-npm install
+cd frontend/  
+npm install  
 npm run dev #This should work now that you installed the dependencies
 
 Make sure you have prereqs installed: node -v, npm -v
