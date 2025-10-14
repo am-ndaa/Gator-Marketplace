@@ -1,0 +1,29 @@
+.filter-panel {
+  position: fixed;
+  top: 10vh;           /* below navbar if navbar is 10vh tall */
+  left: 0;
+  height: 90vh;        /* fill the screen below navbar */
+  width: 8vw;         /* adjust for your layout, matches screenshot proportions */
+  background: #00A7E1; /* blue color */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around; /* evenly space circles */
+  z-index: 999;
+}
+
+.filter-circle {
+  width: 12.5vh;
+  height: 12.5vh;
+  border-radius: 50%;
+  border: none;
+  background: #0474BA;     /* Matches the tone in screenshot */
+  box-shadow: inset 0 1vh 1vh rgba(0,0,0,.3);
+  cursor: pointer;
+  transition: background .2s;
+}
+
+.filter-circle:hover,
+.filter-circle:active {
+  background: #00A7E1;      /* Lighter blue for hover/active */
+}
