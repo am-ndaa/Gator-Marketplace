@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useAuth0 } from "@auth0/auth0-react";
 import { useNavigate } from 'react-router-dom'
 import './Navbar.css'
 import logo from '../../assets/logo.svg'
@@ -6,6 +7,8 @@ import searchimg from '../../assets/search.svg'
 
 export default function NavBar() {
   const [dropdownOpen, setDropdownOpen] = useState(false)
+  const { logout } = useAuth0();
+  const { user } = useAuth0();
   const navigate = useNavigate()
   const handleProfileClick = () => setDropdownOpen((open) => !open)
 
@@ -28,7 +31,7 @@ export default function NavBar() {
 
       <div className="navbar-profile">
         <img
-          src={logo}
+          src={user?.picture || logo}
           className="navbar-profile-img"
           alt="Profile"
           onClick={handleProfileClick}
@@ -36,7 +39,7 @@ export default function NavBar() {
         {dropdownOpen && (
           <div className="navbar-dropdown">
             <button onClick={() => navigate('/profile')}>Profile</button>
-            <button>Logout</button>
+            <button onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}>Logout</button>
           </div>
         )}
       </div>
