@@ -33,10 +33,10 @@ export default function Login() {
 
       <button onClick={() => navigate('/homepage')}>
       Go to Homepage
-    </button>
-    <button onClick={() => navigate('/profile')}>
-      Go to Profile
-    </button>
+      </button>
+      <button onClick={() => navigate('/profile')}>
+        Go to Profile
+      </button>
     </div>
   )
 }

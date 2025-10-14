@@ -4,8 +4,6 @@ import './Navbar.css'
 import logo from '../../assets/logo.svg'
 import searchimg from '../../assets/search.svg'
 
-const profileImgUrl = 'https://via.placeholder.com/48'
-
 export default function NavBar() {
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const navigate = useNavigate()

@@ -19,6 +19,8 @@
   display: flex;
   align-items: center;
   margin: 1vw;
+  user-select: none;
+  pointer-events: auto; 
 }
 .navbar-logo img {
   height: 100%;
@@ -66,6 +68,8 @@
 .navbar-profile {
   position: relative;
   margin-right: 1vw;
+  user-select: none;
+  pointer-events: auto; 
 }
 
 .navbar-profile-img {
