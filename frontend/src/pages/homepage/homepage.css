@@ -1,3 +1,5 @@
 .main-content {
-  margin-top: 10vh;   /* Same as your navbar's fixed height */
+  position: absolute; 
+  left: 10vw;
+  top: 14vh;                    
 }

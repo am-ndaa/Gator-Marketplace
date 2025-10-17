@@ -1,8 +1,9 @@
 .listing-card {
   background: #e0e0e0;
-  border-radius: 12px;
+  border-radius: 1vw;
+  width: 28vw;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 1vh 2vh rgba(0,0,0,0.1);
   transition: transform 0.2s, box-shadow 0.2s;
   cursor: pointer;
   user-select: none;
@@ -10,13 +11,13 @@
 }
 
 .listing-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  transform: translateY(-1vh);
+  box-shadow: 0 1vh 2vh rgba(0,0,0,0.3);
 }
 
 .card-image {
   width: 100%;
-  height: 200px;
+  height: 25vh;
   background: #f0f0f0;
   display: flex;
   align-items: center;
@@ -30,7 +31,7 @@
 }
 
 .card-content {
-  height: 80px;
+  height: 8vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -38,29 +39,27 @@
   color: white;
 }
 
-/* Even cards - Blue */
 .listing-card.even .card-content {
   background: #00A7E1;
 }
 
-/* Odd cards - Orange */
 .listing-card.odd .card-content {
   background: #ffa630;
 }
 
 .card-content h3 {
   margin: 0;
-  font-size: 1.1rem;
+  font-size: 2vh;
 }
 
 .price {
-  font-size: 1.2rem;
+  font-size: 2vh;
   font-weight: bold;
-  margin: 4px 0;
+  margin: 1vh 0;
 }
 
 .description {
-  font-size: 0.9rem;
+  font-size: 2vh;
   opacity: 0.9;
   margin: 0;
 }

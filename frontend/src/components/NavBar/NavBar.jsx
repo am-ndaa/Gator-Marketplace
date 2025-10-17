@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useAuth0 } from "@auth0/auth0-react";
+import * as api from '../../api/listings'
 import { useNavigate } from 'react-router-dom'
 import './Navbar.css'
 import logo from '../../assets/logo.svg'
@@ -11,6 +12,19 @@ export default function NavBar() {
   const { user } = useAuth0();
   const navigate = useNavigate()
   const handleProfileClick = () => setDropdownOpen((open) => !open)
+
+  const { getAccessTokenSilently } = useAuth0();
+
+  const handleRefreshListings = async (e) => {
+    e?.preventDefault();
+    try {
+      const token = await getAccessTokenSilently();
+      const data = await api.listListings({}, token);
+      console.log('Fetched listings', data);
+    } catch (err) {
+      console.error('Failed to fetch listings', err);
+    }
+  }
 
   return (
     <div className="navbar">
@@ -28,7 +42,7 @@ export default function NavBar() {
           <img src={searchimg}/>
         </button>
       </form>
-
+  
       <div className="navbar-profile">
         <img
           src={user?.picture || logo}

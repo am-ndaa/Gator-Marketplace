@@ -6,7 +6,16 @@ export default function LogoutButton() {
   if (!isAuthenticated) return null;
 
   return (
-    <button onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}>
+    <button
+      onClick={() =>
+        logout({
+          logoutParams: {
+            federated: true,
+            returnTo: window.location.origin,
+          },
+        })
+      }
+    >
       Log Out
     </button>
   );

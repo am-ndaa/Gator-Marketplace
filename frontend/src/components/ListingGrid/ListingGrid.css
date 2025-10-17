@@ -1,13 +1,13 @@
 .listing-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-  padding: 24px;
-  max-width: 1200px;
-  margin: 0 auto;
+  gap: 2vh 1vw;
+  padding: 1vw;
+  max-width: auto;
+  margin: 0;
 }
 
-@media (max-width: 900px) {
+/* @media (max-width: 900px) {
   .listing-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -17,4 +17,4 @@
   .listing-grid {
     grid-template-columns: 1fr;
   }
-}
+} */
