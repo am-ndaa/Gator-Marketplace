@@ -18,7 +18,7 @@
     url('../../assets/images/TiledBackground.png'); /* small tiled image */
   
   background-repeat: no-repeat, repeat;       /* gradient doesn't repeat, pattern repeats */
-  background-size: cover, 100px 100px;          /* gradient covers whole container, pattern tiles smaller */
+  background-size: cover, 75px 75px;          /* gradient covers whole container, pattern tiles smaller */
   background-position: center, top left;
 
   position: fixed;
