@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './login.css'
 import LogoutButton from '../../components/LogoutButton'
+import LoginLogo from '../../assets/images/LoginLogo.png'
 
 export default function Login() {
   const navigate = useNavigate()
@@ -22,21 +23,24 @@ export default function Login() {
   }, [])
 
   return (
-    <div style={{ padding: 20 }}>
-      <h1>React + Vite Frontend</h1>
-      <p>Backend says: {msg}</p>
+    <div className="login-background">
+      <div className="login-page">
+        <div>
+          <img src={LoginLogo} alt="Gator Marketplace Logo" className="login-logo" />
+        </div>
 
-      {/* ✅ Add your Auth0 login button here */}
-      <LoginButton />
-      <LogoutButton />
-      
+        <div>
+          <h1>
+          Welcome to<br />
+          Gator Marketplace
+          </h1>
+          {/* <p>Backend says: {msg}</p> */}
 
-      <button onClick={() => navigate('/homepage')}>
-      Go to Homepage
-      </button>
-      <button onClick={() => navigate('/profile')}>
-        Go to Profile
-      </button>
+          <LoginButton />
+          <LogoutButton />
+        </div>
+
+      </div>
     </div>
   )
 }
