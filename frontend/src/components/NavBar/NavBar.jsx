@@ -7,7 +7,7 @@ import './Navbar.css'
 import logo from '../../assets/logo.svg'
 import searchimg from '../../assets/search.svg'
 
-export default function NavBar() {
+export default function NavBar({ onSearch }) {
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const { logout, user } = useAuth0();
   const { userProfile } = useUserProfile()
@@ -33,8 +33,13 @@ export default function NavBar() {
         <img src={logo} alt="Gator Marketplace"/>
       </div>
 
-      <form className="navbar-search">
+      <form className="navbar-search" onSubmit={(e) => {
+        e.preventDefault()
+        const query = e.target.search.value
+        onSearch?.(query)
+      }}>
         <input
+          name="search"
           type="text"
           placeholder="Search..."
           className="navbar-search-input"

@@ -15,6 +15,8 @@ const { isAuthenticated, user, logout, isLoading, getAccessTokenSilently } = use
   const [listings, setListings] = useState([])
   const [loadingListings, setLoadingListings] = useState(true)
   const [listError, setListError] = useState(null)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [selectedFilter, setSelectedFilter] = useState('')
 
   useEffect(() => {
     if (!isLoading && isAuthenticated && user) {
@@ -42,8 +44,6 @@ const { isAuthenticated, user, logout, isLoading, getAccessTokenSilently } = use
         console.time("Auth0 getToken");
         let token = null
         try {
-          // Skip token for now since backend doesn't require auth
-          // When re-enabling, use: token = await getAccessTokenSilently({ timeoutInSeconds: 5 })
           token = null
         } catch {
           token = null
@@ -51,7 +51,10 @@ const { isAuthenticated, user, logout, isLoading, getAccessTokenSilently } = use
         console.timeEnd("Auth0 getToken");
 
         console.time("API call");
-        const res = await api.listListings({}, token)
+        const params = {}
+        if (searchQuery) params.q = searchQuery
+        if (selectedFilter) params.filter = selectedFilter
+        const res = await api.listListings(params, token)
         console.timeEnd("API call");
 
         if (!mounted) return
@@ -66,12 +69,12 @@ const { isAuthenticated, user, logout, isLoading, getAccessTokenSilently } = use
 
     load()
     return () => { mounted = false }
-  }, [getAccessTokenSilently])
+  }, [searchQuery, selectedFilter])
 
   return (
     <>
-      <NavBar />
-      <FilterPanel />
+      <NavBar onSearch={setSearchQuery} />
+      <FilterPanel onFilterChange={setSelectedFilter} selectedFilter={selectedFilter} />
       <div className="main-content">
         {loadingListings ? (
           <p>Loading listings...</p>

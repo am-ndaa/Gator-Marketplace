@@ -1,10 +1,24 @@
 import './FilterPanel.css'
 
-export default function FilterPanel() {
+export default function FilterPanel({ onFilterChange, selectedFilter }) {
+  const categories = ['dorm', 'school supplies', 'clothing', 'textbooks', 'electronics']
+  
   return (
     <div className="filter-panel">
-      {[...Array(5)].map((_, i) => (
-        <button className="filter-circle" key={i} />
+      <button 
+        className={`filter-circle ${!selectedFilter ? 'active' : ''}`}
+        onClick={() => onFilterChange?.('')}
+      >
+        All
+      </button>
+      {categories.map((category) => (
+        <button 
+          className={`filter-circle ${selectedFilter === category ? 'active' : ''}`}
+          key={category}
+          onClick={() => onFilterChange?.(category)}
+        >
+          {category}
+        </button>
       ))}
     </div>
   )
