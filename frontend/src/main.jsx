@@ -10,7 +10,8 @@ root.render(
     domain="dev-vzjmeo4vnrvys66u.us.auth0.com"
     clientId="L7pHCpj1oA71vNsPhA6KTWhYWpyu3uNM"
     authorizationParams={{
-      redirect_uri: window.location.origin + '/homepage'
+      redirect_uri: window.location.origin + '/homepage',
+      audience: import.meta.env.VITE_AUTH0_AUDIENCE // Add this when you have an API
     }}
     cacheLocation="localstorage" 
   >

@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.http import JsonResponse
 from django.urls import path
 from api.views import listing
-
+from api.views import user_profile
 
 def root(request):
     return JsonResponse({"message": "Gator Marketplace API is running :)"})
@@ -28,4 +28,6 @@ urlpatterns = [
     #path('api/test/', test_view),
     path('', root),
     path('api/listings/', listing),
+    path('api/users/', user_profile),  
+    path('api/users/<str:auth0_id>/', user_profile),
 ]

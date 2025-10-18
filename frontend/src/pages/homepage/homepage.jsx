@@ -42,7 +42,9 @@ const { isAuthenticated, user, logout, isLoading, getAccessTokenSilently } = use
         console.time("Auth0 getToken");
         let token = null
         try {
-          token = await getAccessTokenSilently()
+          // Skip token for now since backend doesn't require auth
+          // When re-enabling, use: token = await getAccessTokenSilently({ timeoutInSeconds: 5 })
+          token = null
         } catch {
           token = null
         }

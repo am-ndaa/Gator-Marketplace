@@ -21,9 +21,16 @@ def get_db():
         return _db
     mongo_uri = os.getenv("MONGO_URI")
     db_name = os.getenv("MONGO_DB", "gator_marketplace")
-    _client = MongoClient(mongo_uri)
-    _db = _client[db_name]
-    return _db
+    try:
+        _client = MongoClient(mongo_uri, serverSelectionTimeoutMS=5000)
+        # Test connection immediately
+        _client.admin.command('ping')
+        _db = _client[db_name]
+        print(f"✅ Connected to MongoDB: {db_name}")
+        return _db
+    except Exception as e:
+        print(f"❌ MongoDB connection failed: {e}")
+        raise
 
 def get_collection(name: str):
     """Shortcut to get a collection from the DB."""

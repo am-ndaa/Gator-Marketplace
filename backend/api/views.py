@@ -100,6 +100,45 @@ def listing(request):
         created["seller_id"] = to_str(created["seller_id"])
 
         return Response(created, status=201)
+
+@api_view(['GET', 'POST', 'PATCH'])
+def user_profile(request, auth0_id=None):
+    db = get_db()
+    users = db["users"]
+
+    if request.method == "GET":
+        if not auth0_id:
+            return Response({"error": "Missing user id"}, status=400)
+        user = users.find_one({"auth0_id": auth0_id})
+        if not user:
+            return Response({"error": "User not found"}, status=404)
+        user["id"] = str(user["_id"])
+        return Response(user)
+
+    elif request.method == "POST":
+        ser = UserSerializer(data=request.data)
+        if not ser.is_valid():
+            return Response({"errors": ser.errors}, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+        existing = users.find_one({"auth0_id": request.data.get("auth0_id")})
+        if existing:
+            return Response({"error": "User already exists"}, status=409)
+        doc = {**ser.validated_data}
+        res = users.insert_one(doc)
+        created = users.find_one({"_id": res.inserted_id})
+        created["id"] = str(created["_id"])
+        return Response(created, status=201)
+
+    elif request.method == "PATCH":
+        if not auth0_id:
+            return Response({"error": "Missing user id"}, status=400)
+        update_fields = request.data
+        users.update_one({"auth0_id": auth0_id}, {"$set": update_fields})
+        updated = users.find_one({"auth0_id": auth0_id})
+        if not updated:
+            return Response({"error": "User not found"}, status=404)
+        updated["id"] = str(updated["_id"])
+        return Response(updated)
+    
 '''
 # @api_view(["POST"])
 # #@permission_classes([IsAuthenticated])  # require login here FIXME

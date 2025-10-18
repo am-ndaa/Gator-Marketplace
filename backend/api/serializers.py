@@ -20,6 +20,7 @@ class ListingSerializer(serializers.Serializer):
     created_at = serializers.DateTimeField(required=False, read_only=True) # backend sets this 
 
 class UserSerializer(serializers.Serializer):
+    auth0_id = serializers.CharField()
     email = serializers.EmailField()
     first_name = serializers.CharField(max_length=30, required=False, allow_blank=True)
     last_name = serializers.CharField(max_length=30, required=False, allow_blank=True)
