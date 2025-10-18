@@ -1,8 +1,101 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+/* ===== Login Page Styling ===== */
+
+
+.login-background {
+  display: flex;
+  flex-direction: column;       /* stack elements vertically */
+  justify-content: center;      /* vertically center content */
+  align-items: center;          /* horizontally center content */
+
+  height: 100vh;
+  width: 100vw;
+  padding: 0;
+  
+  /* background-image: url('../../assets/images/TiledBackground.png'); */
+
+  background-image: 
+    radial-gradient(circle at center, rgba(0,0,0,0) 0%, rgba(0,0,0,0.4) 100%), /* gradient */
+    url('../../assets/images/TiledBackground.png'); /* small tiled image */
+  
+  background-repeat: no-repeat, repeat;       /* gradient doesn't repeat, pattern repeats */
+  background-size: cover, 75px 75px;          /* gradient covers whole container, pattern tiles smaller */
+  background-position: center, top left;
+
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.login-page {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12rem;
+}
+
+/* Header text (Welcome to Gator Marketplace) */
+.login-page h1 {
+  align-items: center;
+  font-size: 3.5rem;
+  text-shadow: 2px 2px 4px #000000;
+  color: #ffffff;
+  margin-bottom: 1rem;
+  align-self: flex-end;      /* moves it to the right within flex container */
+  /* margin-right: -40rem; */
+  font-weight: 700;
+  transform: translate(0, -3rem);
+}
+
+/* Backend message
+.login-page p {
+  color: #555;
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+} */
+
+/* Buttons (all buttons on this page) */
+.login-page button {
+  background-color: #F17720;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 2rem;
+  margin: 0.5rem;
+  font-size: 1.3rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  /* margin-right: -40rem; */
+}
+
+.login-page button:hover {
+  background-color: #F24E1E;
+  transform: translateY(-1px);
+}
+
+.login-page button:active {
+  background-color: #002b5e;
+  transform: translateY(0);
+}
+
+.login-logo {
+  /* height: 30em; */
+  height: 70vh;
+  border-radius: 100%;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+}
+
+
+/* Responsive tweaks */
+@media (max-width: 600px) {
+  .login-page h1 {
+    font-size: 1.8rem;
+  }
+
+  .login-page button {
+    width: 80%;
+    font-size: 0.9rem;
+  }
 }
 
 .logo {
@@ -40,3 +133,5 @@
 .read-the-docs {
   color: #888;
 }
+
+
