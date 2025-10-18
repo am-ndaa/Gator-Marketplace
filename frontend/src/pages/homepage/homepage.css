@@ -3,3 +3,46 @@
   left: 10vw;
   top: 14vh;                    
 }
+
+.new-listing-button {
+  position: fixed;
+  bottom: 3vh;
+  right: 2vw;
+  width: 8vh;
+  height: 8vh;
+  background: #FF6B35;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+  font-size: 4vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2000;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+.new-listing-button:hover {
+  background: #ffa630;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3000;
+}
+.modal-content {
+  background: #fff;
+  border-radius: 1.5vh;
+  padding: 2rem;
+  min-width: 320px;
+  max-width: 90vw;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.22);
+  position: relative;
+}

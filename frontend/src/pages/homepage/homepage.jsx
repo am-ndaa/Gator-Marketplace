@@ -17,6 +17,8 @@ const { isAuthenticated, user, logout, isLoading, getAccessTokenSilently } = use
   const [listError, setListError] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedFilter, setSelectedFilter] = useState('')
+  const [openModal, setOpenModal] = useState(null);
+  const [selectedListing, setSelectedListing] = useState(null); // TODO for viewing listing details
 
   useEffect(() => {
     if (!isLoading && isAuthenticated && user) {
@@ -81,9 +83,47 @@ const { isAuthenticated, user, logout, isLoading, getAccessTokenSilently } = use
         ) : listError ? (
           <p style={{ color: 'red' }}>Failed to load listings</p>
         ) : (
-          <ListingGrid listings={listings} />
+          <ListingGrid 
+            listings={listings} 
+            onListingClick={listing => {
+              setSelectedListing(listing);
+              setOpenModal('view');
+            }}
+          />
         )}
       </div>
+      <button
+        className="new-listing-button"
+        onClick={() => setOpenModal('create')}
+      >
+        +
+      </button>
+      {openModal === 'create' && (
+        <div className="modal-overlay" onClick={() => setOpenModal(null)}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <h2>Create New Listing</h2>
+            {/* TODO: Add fields to create listing */}
+            <button onClick={() => setOpenModal(null)}>Cancel</button>
+          </div>
+        </div>
+      )}
+
+      {openModal === 'view' && selectedListing && (
+        <div className="modal-overlay" onClick={() => setOpenModal(null)}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <h2>{selectedListing.title}</h2>
+            <img src={selectedListing.image_url} alt={selectedListing.title} />
+            <p>{selectedListing.description}</p>
+            <p>Price: ${selectedListing.price}</p>
+            <p>Category: {selectedListing.category}</p>
+            <p>Price: {selectedListing.price}</p>
+            <p>Seller ID: {selectedListing.seller_id}</p> {/*Need to figure out how to track seller id to seller email or name, probably need to make the sellerid when creating a listing the auth0 id and then in this field call the email through that id*/}
+            <p>Listing created: {selectedListing.created_at}</p> {/*Need to fix format so it onyl shows day? Maybe time? but pretty*/}
+
+            <button onClick={() => setOpenModal(null)}>Close</button>
+          </div>
+        </div>
+      )}  
     </>
   )
 }
