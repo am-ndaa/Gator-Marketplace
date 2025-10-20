@@ -287,7 +287,7 @@ export default function Home() {
                     }
                   }}
                 />
-                <small style={{ color: '#666', fontSize: '12px' }}>
+                <small style={{ color: '#666', fontSize: '12px', marginLeft: '8px' }}>
                   Tip: Use smaller images (under 2MB) for faster loading.
                 </small>
               </div>
