@@ -5,13 +5,12 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import * as api from '../../api/listings'
-import logo from '../../assets/logo.svg'
 
 import './homepage.css'
 
 export default function Home() {
 
-    const { isAuthenticated, user, logout, isLoading, getAccessTokenSilently } = useAuth0();
+  const { isAuthenticated, user, logout, isLoading } = useAuth0();
   const navigate = useNavigate();
   const [listings, setListings] = useState([])
   const [loadingListings, setLoadingListings] = useState(true)
@@ -134,8 +133,6 @@ export default function Home() {
         ) : (
           <ListingGrid
             listings={listings}
-          <ListingGrid
-            listings={listings}
             onListingClick={listing => {
               setSelectedListing(listing);
               setOpenModal('view');
@@ -237,7 +234,6 @@ export default function Home() {
             <button onClick={() => setOpenModal(null)}>Close</button>
           </div>
         </div>
-      )}
       )}
     </>
   )
