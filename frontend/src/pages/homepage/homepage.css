@@ -68,6 +68,7 @@
 }
 
 .modal-content img {
+  max-height: 30vh;
   max-width: 100%;
   display: block;
   margin: 0 auto;
@@ -75,10 +76,16 @@
 }
 
 .modal-content p {
+  text-align: left;
   margin: 0.25rem 0;
   display: flex;
   justify-content: space-between;
   font-size: 1rem;
+  max-height: calc(1.2rem * 5); /* 4 lines */
+  overflow-y: auto;          /* vertical scroll if too long */
+  overflow-x: hidden;        /* prevent horizontal scroll */
+  word-break: break-word;    /* wrap long words without spaces */
+  white-space: normal;       /* ensure wrapping is allowed */
 }
 
 .modal-content p span.label {
