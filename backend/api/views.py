@@ -21,7 +21,7 @@ def get_user_by_email(email: str) -> Dict[str, Any] | None:
 
 @api_view(['GET', 'POST'])
 #@permission_classes([IsAuthenticated]) #FIXME
-def listing(request):
+def listing(request, listing_id=None):
     """
     GET /api/listings
       ?q=<search by title>
@@ -34,6 +34,18 @@ def listing(request):
     if request.method == "GET":
         db = get_db()
         listings = get_collection("listings")
+        
+        # If listing_id provided, return single listing with image
+        if listing_id:
+            try:
+                listing_doc = listings.find_one({"_id": ObjectId(listing_id)})
+                if not listing_doc:
+                    return Response({"error": "Listing not found"}, status=404)
+                listing_doc["id"] = to_str(listing_doc.pop("_id"))
+                listing_doc["seller_id"] = to_str(listing_doc.get("seller_id"))
+                return Response(listing_doc)
+            except Exception as e:
+                return Response({"error": "Invalid listing ID"}, status=400)
 
         q = request.query_params.get("q")
         filter_param = request.query_params.get("filter")
@@ -61,16 +73,26 @@ def listing(request):
 
             query["seller_id"] = {"$ne": me["_id"]}
 
-        docs = list(listings.find(query).sort("created_at", -1))
+
+        
+        page = int(request.query_params.get("page", 1))
+        limit = 12
+        skip = (page - 1) * limit
+        
+        docs = list(listings.find(query).sort("created_at", -1).skip(skip).limit(limit))
+        total_count = listings.count_documents(query)
+        has_more = skip + limit < total_count
         
         items: List[Dict[str, Any]] = []
         for d in docs:
             d["id"] = to_str(d.pop("_id"))
             d["seller_id"] = to_str(d.get("seller_id"))
+            # Remove image for list performance - will load separately
+            d.pop("image_url", None)
             items.append(d)
 
         print("LISTINGS RESPONSE:", items)
-        return Response({"items": items, "next_cursor": None})
+        return Response({"items": items, "has_more": has_more, "page": page, "total": total_count})
     
     elif request.method == "POST":
         db = get_db()

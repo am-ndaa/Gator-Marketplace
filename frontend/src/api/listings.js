@@ -25,10 +25,11 @@ function makeHeaders(token) {
   return headers;
 }
 
-export async function listListings({ q, filter } = {}, token) {
+export async function listListings({ q, filter, page } = {}, token) {
   const params = new URLSearchParams();
   if (q) params.set('q', q);
   if (filter) params.set('filter', filter);
+  if (page) params.set('page', page);
   const url = `${API_BASE}/api/listings/` + (params.toString() ? `?${params.toString()}` : '');
   const resp = await fetch(url, { headers: makeHeaders(token) });
   return handleResp(resp);

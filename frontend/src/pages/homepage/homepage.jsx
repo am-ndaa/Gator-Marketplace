@@ -16,6 +16,10 @@ export default function Home() {
   const [listings, setListings] = useState([])
   const [loadingListings, setLoadingListings] = useState(true)
   const [listError, setListError] = useState(null)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [hasMore, setHasMore] = useState(false)
+  const [loadingMore, setLoadingMore] = useState(false)
+  const [listingImages, setListingImages] = useState({})
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedFilter, setSelectedFilter] = useState('')
   const [openModal, setOpenModal] = useState(null);
@@ -66,11 +70,15 @@ export default function Home() {
         const params = {}
         if (searchQuery) params.q = searchQuery
         if (selectedFilter) params.filter = selectedFilter
-        const res = await api.listListings(params, token)
+        const res = await api.listListings({...params, page: 1}, token)
         console.timeEnd("API call");
 
         if (!mounted) return
         setListings(res.items || [])
+        setHasMore(res.has_more || false)
+        setCurrentPage(1)
+        // Load images for visible listings
+        loadImagesForListings(res.items || [])
       } catch (err) {
         console.error('Failed to load listings', err)
         setListError(err)
@@ -82,6 +90,40 @@ export default function Home() {
     load()
     return () => { mounted = false }
   }, [searchQuery, selectedFilter])
+
+  async function loadImagesForListings(listingsToLoad) {
+    for (const listing of listingsToLoad) {
+      if (!listingImages[listing.id]) {
+        try {
+          const fullListing = await api.getListing(listing.id, null)
+          setListingImages(prev => ({...prev, [listing.id]: fullListing.image_url}))
+        } catch (err) {
+          console.error('Failed to load image for listing:', listing.id)
+        }
+      }
+    }
+  }
+
+  async function loadMore() {
+    if (loadingMore || !hasMore) return
+    
+    setLoadingMore(true)
+    try {
+      const params = {}
+      if (searchQuery) params.q = searchQuery
+      if (selectedFilter) params.filter = selectedFilter
+      const res = await api.listListings({...params, page: currentPage + 1}, null)
+      
+      setListings(prev => [...prev, ...res.items])
+      setHasMore(res.has_more || false)
+      setCurrentPage(prev => prev + 1)
+      loadImagesForListings(res.items)
+    } catch (err) {
+      console.error('Failed to load more listings', err)
+    } finally {
+      setLoadingMore(false)
+    }
+  }
 
   async function handleCreateListing(e) {
     e.preventDefault();
@@ -107,8 +149,11 @@ export default function Home() {
       const params = {}
       if (searchQuery) params.q = searchQuery
       if (selectedFilter) params.filter = selectedFilter
-      const res = await api.listListings(params, null);
+      const res = await api.listListings({...params, page: 1}, null);
       setListings(res.items || []);
+      setHasMore(res.has_more || false)
+      setCurrentPage(1)
+      loadImagesForListings(res.items || [])
       setLoadingListings(false);
     } catch (err) {
       // Show proper error message if object returned
@@ -132,13 +177,33 @@ export default function Home() {
         ) : listError ? (
           <p style={{ color: 'red' }}>Failed to load listings</p>
         ) : (
-          <ListingGrid
-            listings={listings}
-            onListingClick={listing => {
-              setSelectedListing(listing);
-              setOpenModal('view');
-            }}
-          />
+          <>
+            <ListingGrid
+              listings={listings.map(listing => ({...listing, image_url: listingImages[listing.id]}))}
+              onListingClick={async (listing) => {
+                try {
+                  const fullListing = await api.getListing(listing.id, null)
+                  setSelectedListing(fullListing)
+                  setOpenModal('view')
+                } catch (err) {
+                  console.error('Failed to load full listing:', err)
+                  setSelectedListing(listing)
+                  setOpenModal('view')
+                }
+              }}
+            />
+            {hasMore && (
+              <div style={{ textAlign: 'center', margin: '20px' }}>
+                <button 
+                  onClick={loadMore} 
+                  disabled={loadingMore}
+                  style={{ padding: '10px 20px', fontSize: '16px' }}
+                >
+                  {loadingMore ? 'Loading...' : 'Load More'}
+                </button>
+              </div>
+            )}
+          </>
         )}
       </div>
       <button
@@ -186,18 +251,46 @@ export default function Home() {
                 <option value="textbooks">Textbooks</option>
                 <option value="electronics">Electronics</option>
               </select>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={e => {
-                  const file = e.target.files[0]
-                  if (file) {
-                    const reader = new FileReader()
-                    reader.onload = () => setNewListing(l => ({ ...l, image_url: reader.result }))
-                    reader.readAsDataURL(file)
-                  }
-                }}
-              />
+              <div>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={e => {
+                    const file = e.target.files[0]
+                    if (file) {
+                      // Check file size (limit to 2MB)
+                      if (file.size > 2 * 1024 * 1024) {
+                        alert('Please choose an image smaller than 2MB')
+                        e.target.value = ''
+                        return
+                      }
+                      
+                      const canvas = document.createElement('canvas')
+                      const ctx = canvas.getContext('2d')
+                      const img = new Image()
+                      
+                      img.onload = () => {
+                        // Moderate compression: 600px max width, 60% quality
+                        const maxWidth = 600
+                        const ratio = Math.min(maxWidth / img.width, maxWidth / img.height)
+                        canvas.width = img.width * ratio
+                        canvas.height = img.height * ratio
+                        
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
+                        const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.6)
+                        setNewListing(l => ({ ...l, image_url: compressedDataUrl }))
+                      }
+                      
+                      const reader = new FileReader()
+                      reader.onload = () => { img.src = reader.result }
+                      reader.readAsDataURL(file)
+                    }
+                  }}
+                />
+                <small style={{ color: '#666', fontSize: '12px' }}>
+                  Tip: Use smaller images (under 2MB) for faster loading.
+                </small>
+              </div>
               {modalError && (
                 <p style={{ color: 'red' }}>
                   {modalError}
