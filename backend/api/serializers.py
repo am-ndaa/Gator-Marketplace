@@ -15,7 +15,7 @@ class ListingSerializer(serializers.Serializer):
     price = serializers.FloatField(min_value=0.0)
     description = serializers.CharField(required=False, allow_blank=True)
     category = serializers.ChoiceField(choices=["dorm", "school supplies", "clothing", "textbooks", "electronics"])
-    image_url = serializers.URLField()
+    image_url = serializers.CharField()  # Allow base64 data URLs
     seller_id = ObjectIdStrField(required=False, read_only=True) # backend sets this
     created_at = serializers.DateTimeField(required=False, read_only=True) # backend sets this 
 

@@ -37,7 +37,6 @@ export default function Login() {
           {/* <p>Backend says: {msg}</p> */}
 
           <LoginButton />
-          <LogoutButton />
         </div>
 
       </div>

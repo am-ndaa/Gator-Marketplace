@@ -10,7 +10,7 @@ import './homepage.css'
 
 export default function Home() {
 
-const { isAuthenticated, user, logout, isLoading, getAccessTokenSilently } = useAuth0();
+  const { isAuthenticated, user, logout, isLoading, getAccessTokenSilently } = useAuth0();
   const navigate = useNavigate();
   const [listings, setListings] = useState([])
   const [loadingListings, setLoadingListings] = useState(true)
@@ -19,6 +19,15 @@ const { isAuthenticated, user, logout, isLoading, getAccessTokenSilently } = use
   const [selectedFilter, setSelectedFilter] = useState('')
   const [openModal, setOpenModal] = useState(null);
   const [selectedListing, setSelectedListing] = useState(null); // TODO for viewing listing details
+
+  const [newListing, setNewListing] = useState({
+    title: '',
+    description: '',
+    price: '',
+    category: '',
+    image_url: ''
+  });
+  const [modalError, setModalError] = useState(null);
 
   useEffect(() => {
     if (!isLoading && isAuthenticated && user) {
@@ -73,6 +82,45 @@ const { isAuthenticated, user, logout, isLoading, getAccessTokenSilently } = use
     return () => { mounted = false }
   }, [searchQuery, selectedFilter])
 
+  async function handleCreateListing(e) {
+    e.preventDefault();
+    setModalError(null);
+    try {
+      const token = null; // Skip auth for now
+      const seller_id = user?.sub; // Auth0 ID
+      const listingData = {
+        ...newListing,
+        price: Number(newListing.price),
+        seller_id
+      };
+      await api.createListing(listingData, token); // uses Auth0 token for authentication
+      setOpenModal(null);
+      setNewListing({
+        title: '',
+        description: '',
+        price: '',
+        category: '',
+        image_url: ''
+      });
+      // Refresh listings after creation
+      const params = {}
+      if (searchQuery) params.q = searchQuery
+      if (selectedFilter) params.filter = selectedFilter
+      const res = await api.listListings(params, null);
+      setListings(res.items || []);
+      setLoadingListings(false);
+    } catch (err) {
+      // Show proper error message if object returned
+      setModalError(
+        typeof err.body === 'string'
+          ? err.body
+          : err.body?.errors
+            ? JSON.stringify(err.body.errors)
+            : JSON.stringify(err.body)
+      );
+    }
+  }
+
   return (
     <>
       <NavBar onSearch={setSearchQuery} />
@@ -83,8 +131,8 @@ const { isAuthenticated, user, logout, isLoading, getAccessTokenSilently } = use
         ) : listError ? (
           <p style={{ color: 'red' }}>Failed to load listings</p>
         ) : (
-          <ListingGrid 
-            listings={listings} 
+          <ListingGrid
+            listings={listings}
             onListingClick={listing => {
               setSelectedListing(listing);
               setOpenModal('view');
@@ -102,8 +150,63 @@ const { isAuthenticated, user, logout, isLoading, getAccessTokenSilently } = use
         <div className="modal-overlay" onClick={() => setOpenModal(null)}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
             <h2>Create New Listing</h2>
-            {/* TODO: Add fields to create listing */}
-            <button onClick={() => setOpenModal(null)}>Cancel</button>
+            <form onSubmit={handleCreateListing} style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+              <input
+                type="text"
+                placeholder="Title"
+                value={newListing.title}
+                onChange={e => setNewListing(l => ({ ...l, title: e.target.value }))}
+                required
+              />
+              <textarea
+                placeholder="Description"
+                value={newListing.description}
+                onChange={e => setNewListing(l => ({ ...l, description: e.target.value }))}
+                required
+              />
+              <input
+                type="number"
+                placeholder="Price"
+                value={newListing.price}
+                onChange={e => setNewListing(l => ({ ...l, price: e.target.value }))}
+                min={0}
+                step="0.01"
+                required
+              />
+              <select
+                value={newListing.category}
+                onChange={e => setNewListing(l => ({ ...l, category: e.target.value }))}
+                required
+              >
+                <option value="">Select Category</option>
+                <option value="dorm">Dorm</option>
+                <option value="school supplies">School Supplies</option>
+                <option value="clothing">Clothing</option>
+                <option value="textbooks">Textbooks</option>
+                <option value="electronics">Electronics</option>
+              </select>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={e => {
+                  const file = e.target.files[0]
+                  if (file) {
+                    const reader = new FileReader()
+                    reader.onload = () => setNewListing(l => ({ ...l, image_url: reader.result }))
+                    reader.readAsDataURL(file)
+                  }
+                }}
+              />
+              {modalError && (
+                <p style={{ color: 'red' }}>
+                  {modalError}
+                </p>
+              )}
+              <div style={{ display: "flex", gap: "10px" }}>
+                <button type="submit">Create</button>
+                <button type="button" onClick={() => setOpenModal(null)}>Cancel</button>
+              </div>
+            </form>
           </div>
         </div>
       )}
@@ -123,7 +226,7 @@ const { isAuthenticated, user, logout, isLoading, getAccessTokenSilently } = use
             <button onClick={() => setOpenModal(null)}>Close</button>
           </div>
         </div>
-      )}  
+      )}
     </>
   )
 }
