@@ -5,12 +5,13 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import * as api from '../../api/listings'
+import logo from '../../assets/logo.svg'
 
 import './homepage.css'
 
 export default function Home() {
 
-const { isAuthenticated, user, logout, isLoading, getAccessTokenSilently } = useAuth0();
+  const { isAuthenticated, user, logout, isLoading, getAccessTokenSilently } = useAuth0();
   const navigate = useNavigate();
   const [listings, setListings] = useState([])
   const [loadingListings, setLoadingListings] = useState(true)
@@ -83,8 +84,8 @@ const { isAuthenticated, user, logout, isLoading, getAccessTokenSilently } = use
         ) : listError ? (
           <p style={{ color: 'red' }}>Failed to load listings</p>
         ) : (
-          <ListingGrid 
-            listings={listings} 
+          <ListingGrid
+            listings={listings}
             onListingClick={listing => {
               setSelectedListing(listing);
               setOpenModal('view');
@@ -102,7 +103,6 @@ const { isAuthenticated, user, logout, isLoading, getAccessTokenSilently } = use
         <div className="modal-overlay" onClick={() => setOpenModal(null)}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
             <h2>Create New Listing</h2>
-            {/* TODO: Add fields to create listing */}
             <button onClick={() => setOpenModal(null)}>Cancel</button>
           </div>
         </div>
@@ -116,14 +116,22 @@ const { isAuthenticated, user, logout, isLoading, getAccessTokenSilently } = use
             <p>{selectedListing.description}</p>
             <p>Price: ${selectedListing.price}</p>
             <p>Category: {selectedListing.category}</p>
-            <p>Price: {selectedListing.price}</p>
             <p>Seller ID: {selectedListing.seller_id}</p> {/*Need to figure out how to track seller id to seller email or name, probably need to make the sellerid when creating a listing the auth0 id and then in this field call the email through that id*/}
-            <p>Listing created: {selectedListing.created_at}</p> {/*Need to fix format so it onyl shows day? Maybe time? but pretty*/}
+            <p>
+              Listing created:{" "}
+              {new Date(selectedListing.created_at).toLocaleString("en-US", {
+                month: "short",   // e.g., Oct
+                day: "numeric",   // e.g., 20
+                hour: "numeric",
+                minute: "2-digit",
+                hour12: true      // 12-hour format with am/pm
+              })}
+            </p>
 
             <button onClick={() => setOpenModal(null)}>Close</button>
           </div>
         </div>
-      )}  
+      )}
     </>
   )
 }
