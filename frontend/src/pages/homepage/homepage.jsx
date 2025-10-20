@@ -1,6 +1,7 @@
 import NavBar from "../../components/NavBar/NavBar";
 import FilterPanel from "../../components/FilterPanel/FilterPanel";
 import ListingGrid from "../../components/ListingGrid/ListingGrid";
+import SellerEmail from "../../components/SellerEmail";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -213,25 +214,39 @@ export default function Home() {
 
       {openModal === 'view' && selectedListing && (
         <div className="modal-overlay" onClick={() => setOpenModal(null)}>
-          <div className="modal-content" onClick={e => e.stopPropagation()}>
-            <h2>{selectedListing.title}</h2>
-            <img src={selectedListing.image_url} alt={selectedListing.title} />
-            <p>{selectedListing.description}</p>
-            <p>Price: ${selectedListing.price}</p>
-            <p>Category: {selectedListing.category}</p>
-            <p>Seller ID: {selectedListing.seller_id}</p> {/*Need to figure out how to track seller id to seller email or name, probably need to make the sellerid when creating a listing the auth0 id and then in this field call the email through that id*/}
-            <p>
-              Listing created:{" "}
-              {new Date(selectedListing.created_at).toLocaleString("en-US", {
-                month: "short",   // e.g., Oct
-                day: "numeric",   // e.g., 20
-                hour: "numeric",
-                minute: "2-digit",
-                hour12: true      // 12-hour format with am/pm
-              })}
-            </p>
-
-            <button onClick={() => setOpenModal(null)}>Close</button>
+          <div className="modal-content" onClick={e => e.stopPropagation()} style={{ maxWidth: "500px", padding: "20px" }}>
+            <h2 style={{ marginBottom: "15px" }}>{selectedListing.title}</h2>
+            <img 
+              src={selectedListing.image_url} 
+              alt={selectedListing.title}
+              style={{ maxWidth: '100%', height: 'auto', marginBottom: '15px' }}
+            />
+            <div style={{ textAlign: "left", lineHeight: "1.6" }}>
+              <p>{selectedListing.description}</p>
+              <div style={{ display: 'flex', justifyContent: 'space-between', margin: '8px 0' }}>
+                <span style={{ fontWeight: 'bold' }}>Price:</span>
+                <span>${Number(selectedListing.price).toLocaleString()}</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', margin: '8px 0' }}>
+                <span style={{ fontWeight: 'bold' }}>Category:</span>
+                <span>{selectedListing.category}</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', margin: '8px 0' }}>
+                <span style={{ fontWeight: 'bold' }}>Seller:</span>
+                <span><SellerEmail sellerId={selectedListing.seller_id} /></span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', margin: '8px 0' }}>
+                <span style={{ fontWeight: 'bold' }}>Listed:</span>
+                <span>{new Date(selectedListing.created_at).toLocaleString("en-US", {
+                  month: "short",
+                  day: "numeric",
+                  hour: "numeric",
+                  minute: "2-digit",
+                  hour12: true
+                })}</span>
+              </div>
+            </div>
+            <button onClick={() => setOpenModal(null)} style={{ marginTop: "20px", padding: "10px 20px" }}>Close</button>
           </div>
         </div>
       )}

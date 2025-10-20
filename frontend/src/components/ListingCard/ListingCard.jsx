@@ -9,7 +9,7 @@ export default function ListingCard({ listing, index }) {
     <div className={cardClass}>
       <div className="card-image">
         <img src={listing.image_url} alt={listing.title} />
-        <p className="price">${listing.price}</p>
+        <p className="price">${Number(listing.price).toLocaleString()}</p>
       </div>
       <div className="card-content">
         <h3>{listing.title}</h3>

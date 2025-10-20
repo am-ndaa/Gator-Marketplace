@@ -19,7 +19,7 @@
 
 .card-image {
   width: 100%;
-  height: 25vh;
+  height: 35vh;
   position: relative; /* Needed for overlay and price positioning */
   display: flex;
   align-items: center;

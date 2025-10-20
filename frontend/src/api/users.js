@@ -30,6 +30,13 @@ export async function getUserProfile(auth0Id, token) {
   return handleResp(resp);
 }
 
+// Get user by MongoDB ObjectId
+export async function getUserById(userId, token) {
+  const url = `${API_BASE}/api/users/by-id/${userId}/`;
+  const resp = await fetch(url, { headers: makeHeaders(token) });
+  return handleResp(resp);
+}
+
 // Create a new user profile
 export async function createUserProfile(profileData, token) {
   const url = `${API_BASE}/api/users/`;
@@ -64,6 +71,7 @@ export async function deleteUserProfile(auth0Id, token) {
 
 export default {
   getUserProfile,
+  getUserById,
   createUserProfile,
   updateUserProfile,
   deleteUserProfile,

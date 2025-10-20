@@ -142,6 +142,27 @@ def user_profile(request, auth0_id=None):
             return Response({"error": "User not found"}, status=404)
         updated["id"] = str(updated["_id"])
         return Response(updated)
+
+@api_view(['GET'])
+def user_by_id(request, user_id=None):
+    """Get user by MongoDB ObjectId"""
+    try:
+        if not user_id:
+            return Response({"error": "Missing user id"}, status=400)
+        
+        db = get_db()
+        users = db["users"]
+        user = users.find_one({"_id": ObjectId(user_id)})
+        
+        if not user:
+            return Response({"error": "User not found"}, status=404)
+            
+        # Convert ObjectId to string for JSON serialization
+        user["id"] = str(user.pop("_id"))
+        return Response(user)
+    except Exception as e:
+        print(f"Error in user_by_id: {e}")
+        return Response({"error": "Internal server error"}, status=500)
     
 '''
 # @api_view(["POST"])
