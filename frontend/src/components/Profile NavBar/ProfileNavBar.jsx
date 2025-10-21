@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useAuth0 } from "@auth0/auth0-react";
 import * as api from '../../api/listings'
 import { useNavigate } from 'react-router-dom'
-import useUserProfile from '../../hooks/useUserProfile'
+import { useUserProfile } from '../../contexts/UserProfileContext'
 import './ProfileNavBar.css'
 import logo from '../../assets/logo.svg'
 

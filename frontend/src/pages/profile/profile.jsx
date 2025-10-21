@@ -3,11 +3,13 @@ import { useState, useEffect } from "react";
 import { updateUserProfile } from "../../api/users"; 
 import "./profile.css";
 import NavBarP from "../../components/Profile NavBar/ProfileNavBar";
+import { useUserProfile } from '../../contexts/UserProfileContext';
 
 export default function Profile() {
   const { user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const { userProfile, updateProfile } = useUserProfile();
   const [profilePic, setProfilePic] = useState(user?.picture);
   const [uploading, setUploading] = useState(false);
 
@@ -29,25 +31,46 @@ export default function Profile() {
     const file = e.target.files[0];
     if (!file) return;
 
-    const localUrl = URL.createObjectURL(file);
-    setProfilePic(localUrl);
-
     setUploading(true);
     try {
-      const token = await getAccessTokenSilently();
-
-      const formData = new FormData();
-      formData.append("profilePicture", file);
-
-      const updatedUser = await updateUserProfile(user.sub, formData, token);
-
-      if (updatedUser?.profilePictureUrl) {
-        setProfilePic(updatedUser.profilePictureUrl);
-      }
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+      
+      img.onload = async () => {
+        // Compress to 600px max width, 70% quality
+        const maxWidth = 600;
+        const ratio = Math.min(maxWidth / img.width, maxWidth / img.height);
+        canvas.width = img.width * ratio;
+        canvas.height = img.height * ratio;
+        
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
+        
+        setProfilePic(compressedDataUrl);
+        
+        try {
+          const token = await getAccessTokenSilently();
+          const updatedUser = await updateUserProfile(user.sub, { profile_picture_url: compressedDataUrl }, token);
+          
+          if (updatedUser?.profile_picture_url) {
+            setProfilePic(updatedUser.profile_picture_url);
+            updateProfile({ profile_picture_url: updatedUser.profile_picture_url });
+          }
+        } catch (err) {
+          console.error("Error uploading profile picture:", err);
+          alert("Error updating profile picture.");
+        } finally {
+          setUploading(false);
+        }
+      };
+      
+      const reader = new FileReader();
+      reader.onload = () => { img.src = reader.result; };
+      reader.readAsDataURL(file);
     } catch (err) {
-      console.error("Error uploading profile picture:", err);
-      alert("Error updating profile picture.");
-    } finally {
+      console.error("Error processing image:", err);
+      alert("Error processing image.");
       setUploading(false);
     }
   };
@@ -65,7 +88,7 @@ export default function Profile() {
               {/* LEFT SIDE — profile picture + upload button */}
               <div className="profile-left" style={{ flexDirection: "column" }}>
                 <img
-                  src={profilePic}
+                  src={userProfile?.profile_picture_url || profilePic}
                   alt={user.name}
                   className="profile-picture"
                 />

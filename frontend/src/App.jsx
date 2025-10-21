@@ -5,18 +5,21 @@ import Home from './pages/homepage/homepage'
 import Profile from './pages/profile/profile'
 import ProtectedRoute from './components/ProtectedRoute'
 import useEnsureUserProfile from './hooks/useEnsureUserProfile'
+import { UserProfileProvider } from './contexts/UserProfileContext'
 
 export default function App() {
 
   useEnsureUserProfile()
 
   return (
-     <Router>
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/homepage" element={<Home />} />
-        <Route path="/profile" element={<Profile />} />
-      </Routes>
-    </Router>
+    <UserProfileProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/homepage" element={<Home />} />
+          <Route path="/profile" element={<Profile />} />
+        </Routes>
+      </Router>
+    </UserProfileProvider>
   )
 }

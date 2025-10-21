@@ -102,17 +102,14 @@ def listing(request, listing_id=None):
         if not ser.is_valid():
             return Response({"errors": ser.errors}, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
-        # Skip auth for now - use a default user or create one
-        user_email = "test@ufl.edu"  # temporary
-        user = db["users"].find_one({"email": user_email})
-        if not user:
-            # Create a temporary user
-            user = {
-                "_id": ObjectId(),
-                "email": user_email,
-                "auth0_id": "temp-user"
-            }
-            db["users"].insert_one(user)
+        # Use the seller_id from request data (Auth0 ID) to find user
+        auth0_id = request.data.get("seller_id")
+        if auth0_id:
+            user = db["users"].find_one({"auth0_id": auth0_id})
+            if not user:
+                return Response({"error": "User not found. Please ensure you're logged in."}, status=400)
+        else:
+            return Response({"error": "Missing seller information."}, status=400)
 
         doc = {
             **ser.validated_data,
@@ -138,7 +135,7 @@ def user_profile(request, auth0_id=None):
         user = users.find_one({"auth0_id": auth0_id})
         if not user:
             return Response({"error": "User not found"}, status=404)
-        user["id"] = str(user["_id"])
+        user["id"] = str(user.pop("_id"))
         return Response(user)
 
     elif request.method == "POST":
@@ -151,7 +148,7 @@ def user_profile(request, auth0_id=None):
         doc = {**ser.validated_data}
         res = users.insert_one(doc)
         created = users.find_one({"_id": res.inserted_id})
-        created["id"] = str(created["_id"])
+        created["id"] = str(created.pop("_id"))
         return Response(created, status=201)
 
     elif request.method == "PATCH":
@@ -162,7 +159,7 @@ def user_profile(request, auth0_id=None):
         updated = users.find_one({"auth0_id": auth0_id})
         if not updated:
             return Response({"error": "User not found"}, status=404)
-        updated["id"] = str(updated["_id"])
+        updated["id"] = str(updated.pop("_id"))
         return Response(updated)
 
 @api_view(['GET'])
