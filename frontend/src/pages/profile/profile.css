@@ -1,0 +1,117 @@
+.profile-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 3rem;
+  padding: 3rem;
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: #f5f7fa;
+  box-sizing: border-box;
+}
+
+input[type="file"] {
+  display: block;
+  margin: 0.5rem auto;
+  font-size: 0.9rem;
+}
+
+.profile-box {
+  background-color: #ffffff;
+  box-shadow: #003366 0px 0px 15px 10px;
+  padding: 3rem 7rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
+/* Left side (circle image) */
+.profile-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profile-picture {
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #003366;
+}
+
+/* Right side (user info) */
+.profile-right {
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 3rem;
+}
+
+.profile-name {
+  font-size: 2rem;
+  color: #003366;
+  margin-bottom: 0.5rem;
+}
+
+.profile-email {
+  font-size: 1.1rem;
+  color: #003366;
+  margin-bottom: 0rem;
+}
+
+.profile-bio {
+  color:#003366;
+  font-size: 1rem;
+  margin-bottom: 2rem;
+}
+
+/* Info bar */
+.profile-info-bar {
+  width: 100%;
+  background-color: #003366;
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  text-align: center;
+  font-weight: 500;
+}
+
+/* Button */
+.profile-button {
+  background-color: #F17720;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  align-self: center;
+  transition: all 0.2s ease-in-out;
+}
+
+.profile-button:hover {
+  background-color: #F24E1E;
+  transform: translateY(-2px);
+}
+
+.profile-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.profile-title {
+  font-size: 3rem;
+  color: #003366;
+  font-weight: bold;
+  margin-bottom: 2rem;
+  text-align: center;
+}
