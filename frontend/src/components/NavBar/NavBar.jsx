@@ -3,7 +3,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import * as api from '../../api/listings'
 import { useNavigate } from 'react-router-dom'
 import useUserProfile from '../../hooks/useUserProfile'
-import './Navbar.css'
+import './NavBar.css'
 import logo from '../../assets/logo.svg'
 import searchimg from '../../assets/search.svg'
 
